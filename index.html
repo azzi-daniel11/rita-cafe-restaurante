@@ -1,0 +1,457 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style-pedido.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <title>Pedir Comida</title>
+</head>
+<body>
+
+    <div id="solicitar-correo">
+        <input id="correo-cliente" type="text">
+        <button id="ingresar-correo">Listo!</button>
+        <p>Ingrese su correo electronico <br> para recibir la factura</p>
+    </div>
+
+    <div class="center-container">
+        <div id="logo-rita"></div>
+        <h3 class="name esconder">“Rita Café & Restaurante”</h3>
+    </div>
+
+    <div class="center-container">
+
+        
+    <p id="mesa-info"></p>
+    </div>
+
+
+    <div id="contenedor-carrito-btn" class="esconder">
+        <div id="contenedor-carrito-alto">
+            <!--<div id="carrito-btn"><p>Ver carrito</p></div>-->
+            <button id="carrito-btn">Ver carrito</button>
+            <p id="total-duplicado" class="price">Total: $0</p>
+            <div id="contador-visual" class="ocultar" ><span> Cantidad: </span><span id="contador-valor">0</span></div>
+        </div>
+        
+        <!--Contenedor Carrito-->
+            <div id="carrito">
+                <ul id="lista-carrito"></ul>
+                <p id="total" class="price">Total: $0</p>
+                <button class="enviar-pedido esconder" disabled>Enviar Pedido</button>
+                <button  id="checkout-btn" >
+                    Comprar
+                </button>
+            </div>
+        <!--Contenedor Carrito-->
+        </div>
+
+        <div id="contenedor-pago" class="ocultar">
+            <button id="cerrar-contenedor-pago">X</button>
+
+            <div class="card-product-container">
+                <button id="pagoEfectivo" class="esconder">Pagar en efectivo</button>
+                <div class="card-product">
+                    <div class="card">
+                        <div id="wallet_container"></div>
+                    </div>
+                </div>
+        </div>
+
+        
+    </div>
+
+    <div class="division-de-seccion"><h4>Cafetería</h4></div>
+    <div class="menu">
+    
+        <div class="producto" data-producto="Café Espresso" data-precio="3">
+            <img src="img/cafe.jpg" alt="Café Espresso">
+            <h3>Café Espresso</h3>
+            <p>$3</p>
+        </div>
+        <div class="producto" data-producto="Cappuccino" data-precio="4">
+            <img src="img/cappuccino.jpg" alt="Cappuccino">
+            <h3>Cappuccino</h3>
+            <p>$4</p>
+        </div>
+        <div class="producto" data-producto="Té de hierbas" data-precio="2">
+            <img src="img/te-hierbas.jpg" alt="Té de Hierbas">
+            <h3>Té de Hierbas</h3>
+            <p>$2</p>
+        </div>
+    
+    </div>
+    
+    <div id="platos-principales" class="division-de-seccion"><h4>Platos principales</h4></div>
+    <div class="menu">
+    
+        <div class="producto" data-producto="Pizza grande de muzzarella" data-precio="5">
+            <img src="img/pizza.png" alt="Pizza Grande de Muzzarella">
+            <h3>Pizza Grande de Muzzarella</h3>
+            <p>$5</p>
+        </div>
+        <div class="producto" data-producto="Hamburguesa" data-precio="7">
+            <img src="img/hamburguesa.jpg" alt="Hamburguesa">
+            <h3>Hamburguesa</h3>
+            <p>$7</p>
+        </div>
+        <div class="producto" data-producto="Pasta" data-precio="6">
+            <img src="img/pasta.jpg" alt="Pasta">
+            <h3>Pasta</h3>
+            <p>$6</p>
+        </div>
+        <div class="producto" data-producto="Ensalada" data-precio="4">
+            <img src="img/ensalada.jpg" alt="Ensalada">
+            <h3>Ensalada</h3>
+            <p>$4</p>
+        </div>
+        <div class="producto" data-producto="Pasta" data-precio="6">
+            <img src="img/pasta.jpg" alt="Pasta">
+            <h3>Pasta</h3>
+            <p>$6</p>
+        </div>
+        <div class="producto" data-producto="Ensalada" data-precio="4">
+            <img src="img/ensalada.jpg" alt="Ensalada">
+            <h3>Ensalada</h3>
+            <p>$4</p>
+        </div>
+    
+    </div>
+    
+    <div id="bebidas" class="division-de-seccion"><h4>Bebidas</h4></div>
+    <div class="menu">
+    
+        <div class="producto" data-producto="Refresco de Cola" data-precio="2">
+            <img src="img/refresco.jpg" alt="Refresco de Cola">
+            <h3>Coca Cola</h3>
+            <p>$2</p>
+        </div>
+        <div class="producto" data-producto="Jugo de Naranja" data-precio="3">
+            <img src="img/jugo-naranja.jpg" alt="Jugo de Naranja">
+            <h3>Jugo de Naranja</h3>
+            <p>$3</p>
+        </div>
+        <div class="producto" data-producto="Agua Mineral" data-precio="1.5">
+            <img src="img/agua.jpg" alt="Agua Mineral">
+            <h3>Agua Mineral</h3>
+            <p>$1.5</p>
+        </div>
+    
+    </div>
+    
+    <div id="postres" class="division-de-seccion"><h4>Postres</h4></div>
+    <div class="menu">
+    
+        <div class="producto" data-producto="Tarta de Manzana" data-precio="4">
+            <img src="img/tarta-manzana.jpg" alt="Tarta de Manzana">
+            <h3>Tarta de Manzana</h3>
+            <p>$4</p>
+        </div>
+        <div class="producto" data-producto="Brownie" data-precio="3.5">
+            <img src="img/brownie.jpg" alt="Brownie">
+            <h3>Brownie</h3>
+            <p>$3.5</p>
+        </div>
+        <div class="producto" data-producto="Helado de Vainilla" data-precio="2.5">
+            <img src="img/helado.jpg" alt="Helado de Vainilla">
+            <h3>Helado de Vainilla</h3>
+            <p>$2.5</p>
+        </div>
+    
+    </div>
+
+
+    <!--Estado del pedido-->
+    <div id="contenedor-pedido-estado">
+        <div class="contenedor-estado">
+            <div id="pedido-solicitado" class="estado-check" ></div>
+            <p>Pedido solicitado</p>
+        </div>
+
+        <div class="contenedor-estado">
+            <div id="pedido-en-proceso" class="estado-check"></div>
+            <p>Pedido en proceso</p>
+        </div>
+
+        <div class="contenedor-estado">
+            <div id="pedido-listo" class="estado-check"></div>
+            <p>¡Pedido Listo!</p>
+        </div>
+
+        <button id="eliminarEstado">Eliminar Estado</button>
+
+
+    <script src="http://192.168.0.158:3000/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io('http://192.168.0.158:3000');
+
+        // Obtener el número de la mesa de la URL
+        const params = new URLSearchParams(window.location.search);
+        const mesa = params.get('mesa');
+
+        // Mostrar el número de la mesa
+        document.getElementById('mesa-info').textContent = `Mesa ${mesa}`;
+
+        // Arreglo para almacenar los productos seleccionados
+        let carrito = [];
+
+        // Agregar event listeners a los divs de productos
+        document.querySelectorAll('.producto').forEach(div => {
+            div.addEventListener('click', function() {
+                const producto = this.getAttribute('data-producto');
+                const precio = parseFloat(this.getAttribute('data-precio')); // Convertir el precio a número
+                carrito.push({ producto, precio });
+
+                // Actualizar la lista del carrito en la interfaz
+                actualizarCarrito();
+            });
+        });
+        
+        // Función para actualizar la lista del carrito en la interfaz
+        function actualizarCarrito() {
+    const listaCarrito = document.getElementById('lista-carrito');
+    listaCarrito.innerHTML = ''; // Limpiar el contenido del carrito
+
+    carrito.forEach((item, index) => {
+        // Crear el 'li' para el producto
+        const li = document.createElement('li');
+        li.textContent = `${item.producto} - $${item.precio.toFixed(2)}`;
+
+        // Crear el botón de eliminar
+        const botonEliminar = document.createElement('button');
+        botonEliminar.classList.add('botonEliminar');
+        botonEliminar.textContent = 'Eliminar';
+
+        // Asociar el evento click al botón de eliminar
+        botonEliminar.addEventListener('click', function() {
+            carrito.splice(index, 1); // Elimina el producto del array carrito
+            guardarCarritoEnLocalStorage(); // Guardar el carrito actualizado en localStorage
+            actualizarCarrito(); // Actualizar la interfaz
+        });
+
+        // Agregar el botón al 'li'
+        li.appendChild(botonEliminar);
+
+        // Agregar el 'li' a la lista del carrito
+        listaCarrito.appendChild(li);
+    });
+
+    // Calcular el total del carrito
+    const total = carrito.reduce((acumulador, item) => acumulador + item.precio, 0);
+    
+    // Actualizar el total en ambos elementos
+    document.getElementById('total').textContent = `Total: $${total.toFixed(2)}`;
+    document.getElementById('total-duplicado').textContent = `Total: $${total.toFixed(2)}`;
+
+    // Habilitar o deshabilitar el botón de enviar pedido
+    document.querySelector('.enviar-pedido').disabled = carrito.length === 0;
+}
+
+
+        // Función para guardar el carrito en localStorage
+        function guardarCarritoEnLocalStorage() {
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+        }
+
+        // Función para cargar el carrito desde localStorage
+        function cargarCarritoDesdeLocalStorage() {
+            const carritoGuardado = localStorage.getItem('carrito');
+            if (carritoGuardado) {
+                carrito = JSON.parse(carritoGuardado);
+                actualizarCarrito(); // Llamar a la función para actualizar la interfaz
+            }
+        }
+
+        // Guardar el carrito cada vez que se actualiza
+        document.querySelectorAll('.producto').forEach(div => {
+            div.addEventListener('click', function() {
+                guardarCarritoEnLocalStorage(); // Guardar el carrito en localStorage después de cada click
+            });
+        });
+
+        // Cargar el carrito al cargar la página
+        window.addEventListener('load', function() {
+            cargarCarritoDesdeLocalStorage(); // Cargar los datos guardados al iniciar la página
+        });
+
+        // Función para vaciar el carrito
+        function vaciarCarrito() {
+            carrito = []; // Vaciar el array carrito
+            localStorage.removeItem('carrito'); // Eliminar el carrito de localStorage
+            actualizarCarrito(); // Actualizar la interfaz para reflejar el carrito vacío
+        }
+
+        // Enviar el pedido al hacer clic en "Enviar Pedido"
+// Mostrar el contenedor de pago al hacer clic en "Enviar Pedido"
+document.querySelector('.enviar-pedido').addEventListener('click', function () {
+    const pedido = {
+        cliente: `Mesa ${mesa}`,
+        carrito: carrito
+    };
+    // Guardar temporalmente el pedido en localStorage (o en una variable)
+    localStorage.setItem('pedidoPendiente', JSON.stringify(pedido));         //<-------------------------------------------------------------
+
+
+    // Mostrar el contenedor de pago después de un pequeño delay
+    setTimeout(() => {
+        document.getElementById('contenedor-pago').classList.remove('ocultar');
+        document.getElementById('contenedor-carrito-btn').classList.remove('expandido');
+    }, 1500);
+});
+
+
+         // Escuchar el evento 'pedidoEnProceso' emitido por el servidor
+        socket.on('pedidoEnProceso', function(data) {
+        console.log('Evento recibido:', data);  // Mostrar los datos recibidos en la consola
+        console.log("data mesa " + data.mesa)
+        console.log(" mesa " + mesa)
+        if (data.mesa == "Mesa " + mesa) {
+        const pedidoEnProceso = document.getElementById('pedido-en-proceso');
+        pedidoEnProceso.classList.add('proceso-realizado')
+        localStorage.setItem('pedidoEnProceso', 'realizado');
+        }
+        
+        });
+         // Escuchar el evento 'PedidoListo' emitido por el servidor
+        socket.on('pedidoListo', function(data) {
+        console.log('Evento recibido:', data);  // Mostrar los datos recibidos en la consola
+        console.log("data mesa " + data.mesa)
+        console.log(" mesa " + mesa)
+        if (data.mesa == "Mesa " + mesa) {
+        const pedidoListo = document.getElementById('pedido-listo');
+        pedidoListo.classList.add('proceso-realizado')
+        localStorage.setItem('pedidoListo', 'realizado');
+        }
+
+        });
+
+        //removedor de estado en el sitio del cliente 
+        socket.on('pedidoEntregado', function(data) {
+            if (data.mesa == "Mesa " + mesa) {
+                eliminarEstadoProceso();
+        }
+            
+        });
+
+        //Desplegador botón carrito
+        let interruptor = false;
+        document.getElementById('contenedor-carrito-btn').addEventListener('click',() =>{
+            if (interruptor == false){
+                document.getElementById('detalle-carrito').classList.remove('esconder');
+                interruptor = true;
+        }
+            else if (interruptor == true){
+                document.getElementById('detalle-carrito').classList.add('esconder');
+                interruptor = false;
+            }
+        });
+        
+        // Seleccionar todos los elementos con la clase 'producto'
+        const productos = document.querySelectorAll('.producto');
+        let contadorCarrito = 0;
+        const contadorVisualContenedor = document.getElementById('contador-visual');
+
+        
+//Esconder carrito cuando está vacío
+        var contadorProductos = document.getElementById('contador-valor')
+        setTimeout(() => {
+        document.addEventListener('click', function(event) {
+            var numeroContadorProductos = Number(contadorProductos.textContent)
+            console.log('contador de productos: ' + numeroContadorProductos);
+        console.log('Se hizo clic en algún lugar de la página');
+        if(numeroContadorProductos !== 0){
+            document.getElementById('contenedor-carrito-btn').classList.remove('esconder')
+        }else if(numeroContadorProductos == 0){
+            document.getElementById('contenedor-carrito-btn').classList.add('esconder') //<--------------------------------------
+            document.getElementById('contenedor-carrito-btn').classList.remove('expandido') //<--------------------------------------
+        }
+        });
+    }, "40");
+
+    addEventListener("DOMContentLoaded", (event) => {
+        setTimeout(() => {
+        var numeroContadorProductos = Number(contadorProductos.textContent)
+        if(numeroContadorProductos == 0){
+            document.getElementById('contenedor-carrito-btn').classList.add('esconder')
+        }else if(numeroContadorProductos !== 0){
+            document.getElementById('contenedor-carrito-btn').classList.remove('esconder')
+        }
+    }, "100");
+
+    });
+
+        // Selecciona el elemento donde se mostrará el valor del contador
+        const contadorVisual = document.getElementById('contador-valor');
+
+        // Función para actualizar el contador en la página
+        function actualizarContador() {
+            contadorVisual.textContent = contadorCarrito;
+        }
+
+        // Agregar evento de clic para aumentar el contador en cada producto
+        productos.forEach((producto) => {
+            producto.addEventListener('click', () => {
+                contadorCarrito++;
+                actualizarContador(); // Llama a la función para actualizar la visualización
+                console.log(contadorCarrito); // Muestra el contador actualizado en la consola
+                if(contadorCarrito >= 1){
+                    contadorVisualContenedor.classList.remove('ocultar')
+                }
+            });
+        });
+
+        // Delegar el evento de eliminar a través del contenedor principal
+        document.addEventListener('click', (event) => {
+            if (event.target.classList.contains('botonEliminar')) {
+                contadorCarrito--;
+                actualizarContador(); // Llama a la función para actualizar la visualización
+                console.log(contadorCarrito); // Muestra el contador actualizado en la consola
+                if(contadorCarrito == 0){
+                    contadorVisualContenedor.classList.add('ocultar')
+                }
+            }
+        });
+
+        // Ejemplo de función que crea los botones dinámicamente
+        function agregarBotonEliminar() {
+            const contenedor = document.querySelector('#contenedor-botones');
+            contenedor.innerHTML += `<button class="botonEliminar">Eliminar</button>`;
+
+            // Selecciona el último botón agregado y agrega el `eventListener`
+            const boton = contenedor.querySelector('.botonEliminar:last-child');
+            boton.addEventListener('click', () => {
+                contadorCarrito--;
+                actualizarContador(); // Llama a la función para actualizar la visualización
+                console.log(contadorCarrito); // Muestra el contador actualizado en la consola
+
+            });
+        }
+        document.getElementById("carrito-btn").addEventListener("click", () => {
+            const contenedorCarrito = document.getElementById("contenedor-carrito-btn");
+            contenedorCarrito.classList.toggle("expandido"); // Alterna la clase expandido
+        });
+
+        
+        //Animación menú
+        document.addEventListener("click", (event) => {
+    const contenedorCarrito = document.getElementById("contenedor-carrito-btn");
+    const botonCarrito = document.getElementById("carrito-btn");
+
+    // Verifica que el clic no sea en el contenedor, el botón, un producto o un botón de eliminar
+    if (!contenedorCarrito.contains(event.target) && 
+        event.target !== botonCarrito &&
+        !event.target.closest(".producto") &&
+        !event.target.classList.contains("botonEliminar")) {
+        
+        contenedorCarrito.classList.remove("expandido");
+    }
+});
+
+    </script>
+    <script src="almacenado.js"></script>
+    <script src="app.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,217 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.center-container {
+    display: flex;
+    justify-content: center; /* Centrado horizontal */
+    align-items: center;     /* Centrado vertical */
+}
+
+
+#logo-rita {
+    height: 3.5em;
+    width: 6em;
+    background-image: url(img/logo-rita.png);
+    background-size: cover;
+    margin-top: 1em;
+}
+
+#mesa-info{
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+
+.menu {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: auto;
+    margin-top: 3em;
+    margin-bottom: 3em;
+}
+.producto {
+    width: 7em;
+    height: 10em;
+    padding: 8px;
+    margin: 3px;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.producto {
+    transition: transform 0.4s ease, background-color 0.1s ease; /* Transiciones para tamaño y color de fondo */
+    transition: transform 0.4s ease;
+    outline: none; /* Elimina cualquier borde */
+    user-select: none; /* Desactiva la selección de texto */
+    -webkit-tap-highlight-color: transparent; /* Elimina el color de resaltado al tocar en dispositivos móviles */
+}
+
+
+/* Evitar el efecto hover en dispositivos táctiles */
+@media (pointer: coarse) {
+    .producto:active {
+        transform: scale(1.20); /* Aumenta el tamaño al tocar el producto */
+        transition: transform 0.4s ease, background-color 0.1s ease; /* Transiciones para tamaño y color de fondo */
+    }
+
+    .producto {
+        transition: transform 0.4s ease;
+        outline: none; /* Elimina cualquier borde */
+        user-select: none; /* Desactiva la selección de texto */
+        -webkit-tap-highlight-color: transparent; /* Elimina el color de resaltado al tocar en dispositivos móviles */
+    }
+    .producto:active {
+        background-color: hsl(120, 100%, 91%); /* Gris claro al tocar */
+    }
+}
+
+.producto img {
+    max-width: 100%;
+    max-width: 90%;
+    border-radius: 10px;
+}
+.producto h3 {
+    margin: 10px 0 5px;
+    font-size: 0.8em;
+}
+.producto p {
+    font-size: 0.8em;
+    color: #555;
+}
+#carrito {
+    margin-top: 20px;
+    padding: 10px;
+}
+#carrito h2 {
+    margin-bottom: 10px;
+}
+#total {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.botonEliminar{
+    margin-left: 1em;
+}
+
+.esconder{
+    display: none;
+}
+
+#contenedor-carrito-btn{
+    border: 1px solid black;
+    height: 20em;
+    width: 100vw;
+    position: fixed;
+    z-index: 1000;
+    background-color: white;
+    bottom: 0em ;
+}
+
+#carrito-btn{
+    border: 1px solid black;
+    height: 2em;
+    width: 6em;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10%;
+}
+
+.ocultar{
+    visibility: hidden;
+}
+
+#contenedor-precio-productos{
+width: 8em;
+height: 4em;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+}
+
+#contenedor-carrito-alto{
+    height: 4em;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+/* Estilos iniciales del contenedor */
+#contenedor-carrito-btn {
+    overflow: hidden; /* Oculta el contenido desbordante */
+    height: 50px; /* Altura inicial */
+    transition: height 0.3s ease; /* Animación de transición */
+}
+
+/* Estado expandido del contenedor */
+#contenedor-carrito-btn.expandido {
+    height: 300px; /* Altura expandida */
+}
+
+#contenedor-pago {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Color blanco semitransparente para el fondo */
+    backdrop-filter: blur(5px); /* Nivel de desenfoque */
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.division-de-seccion{
+    width: 100%;
+    height: 2em;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    margin-bottom: 3em;
+}
+
+#cerrar-contenedor-pago{
+    position: absolute;
+    right: .5em;
+    top: .5em;
+}
+
+#solicitar-correo{
+    height:100vh;
+    width:100vw;
+    background-color: rgba(0, 0, 0, 0.5); /* Color blanco semitransparente para el fondo */
+    backdrop-filter: blur(5px); /* Nivel de desenfoque */
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    font-size: 1.7em;
+}
+
+#solicitar-correo p{
+    margin-top: 2em;
+    color: black;
+    -webkit-text-stroke-width: .2px;
+    -webkit-text-stroke-color: white;
+}
+
+#solicitar-correo input{
+    width: 75%;
+    height: 4%;
+    margin-bottom: 1em;
+}

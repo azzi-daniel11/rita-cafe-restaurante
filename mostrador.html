@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style-pedido-mostrador.css">
+    <title>Pedidos Mostrador</title>
+    <style>
+        .mesa {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin: 20px;
+            padding: 15px;
+            width: 300px;
+            display: inline-block;
+            vertical-align: top;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: opacity 1s, transform 1s;
+        }
+        .mesa h2 {
+            margin: 0 0 10px;
+            text-align: center;
+        }
+        .pedido {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .estado-check {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: inline-block;
+            background-color: #ddd;
+        }
+        .estado-activado {
+            background-color: #4CAF50;
+        }
+        .contenedor-estado {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        #pedido-solicitado{
+        background-image: url(check.png);
+        background-size: cover;
+        border: 1px solid green;
+        }
+
+        .botones {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .ocultar {
+            opacity: 0;
+            transform: translateY(-100px);
+        }
+    </style>
+</head>
+<body>
+    <h1>Pedidos</h1>
+    <div id="contenedorMesas"></div> <!-- Contenedor donde se mostrarán los pedidos -->
+
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io('http://localhost:3000');  // Conexión al servidor WebSocket
+
+        socket.on('connect', function() {
+            console.log('Conectado al servidor WebSocket');
+        });
+
+        socket.on('disconnect', function() {
+            console.log('Desconectado del servidor WebSocket');
+        });
+        
+        socket.on('actualizarPedido', function(pedido) {
+            // Crear un nuevo div para la comanda
+            var nuevaComandaDiv = document.createElement('div');
+            nuevaComandaDiv.classList.add('mesa');
+            
+            
+            // Título de la mesa
+            var tituloMesa = document.createElement('h2');
+            tituloMesa.textContent = `${pedido.cliente}`;
+            nuevaComandaDiv.appendChild(tituloMesa);
+            var claseMesa = String(pedido.cliente).replace(/\s+/g, '-').replace(/[^\w-]/g, ''); // Agregamos ID a contenedor
+            nuevaComandaDiv.classList.add(claseMesa);
+            
+            // Agregar los productos al div de la nueva comanda
+            pedido.carrito.forEach(function(item) {
+                var productoDiv = document.createElement('div');
+                productoDiv.classList.add('pedido');
+                productoDiv.textContent = `${item.producto} - $${item.precio}`;
+                nuevaComandaDiv.appendChild(productoDiv);
+            });
+
+            // Contenedor para el estado del pedido
+            var contenedorEstado = document.createElement('div');
+            contenedorEstado.id = "contenedor-pedido-estado";
+            
+            // Estados del pedido
+            const estadosPedido = [
+                { id: "pedido-solicitado", texto: "Pedido solicitado",},
+                { id: "pedido-en-proceso", texto: "Pedido en proceso" },
+                { id: "pedido-listo", texto: "¡Pedido Listo!" }
+            ];
+            
+            estadosPedido.forEach(estado => {
+                const contenedorEstadoItem = document.createElement("div");
+                contenedorEstadoItem.className = "contenedor-estado";
+                
+                const estadoCheck = document.createElement("div");
+                estadoCheck.id = estado.id;
+                estadoCheck.className = "estado-check";
+                
+                const textoEstado = document.createElement("p");
+                textoEstado.textContent = estado.texto;
+                
+                contenedorEstadoItem.appendChild(estadoCheck);
+                contenedorEstadoItem.appendChild(textoEstado);
+                contenedorEstado.appendChild(contenedorEstadoItem);
+            });
+            
+            nuevaComandaDiv.appendChild(contenedorEstado);
+            
+            // Botones de acción
+            var botonesDiv = document.createElement('div');
+            botonesDiv.classList.add('botones');
+            
+            var botonEntregado = document.createElement('button');
+            botonEntregado.textContent = 'Entregado';
+            botonEntregado.disabled = false;
+            
+            botonesDiv.appendChild(botonEntregado);
+            nuevaComandaDiv.appendChild(botonesDiv);
+
+            // Agregar la comanda al contenedor principal
+            document.getElementById('contenedorMesas').appendChild(nuevaComandaDiv);
+
+            // Evento cuando se hace clic en el botón de barra
+            botonEntregado.addEventListener('click', function() {  //<----------------------------
+            // Aplicar la animación de desvanecimiento 
+            nuevaComandaDiv.classList.add('ocultar');
+
+            socket.emit('pedidoEntregado', { mesa: pedido.cliente });  // Enviar el número de mesa
+
+
+            // Eliminar la comanda después de que la animación haya terminado
+            setTimeout(function() {
+                nuevaComandaDiv.remove();
+            }, 1000); // 1000 ms para coincidir con la duración de la animación
+            });
+
+
+            // Cambiar el estado a "Pedido Listo" y remover la comanda
+            botonBarra.addEventListener('click', function() {
+                socket.emit('Pedido Listo', { mesa: pedido.cliente });
+                
+                nuevaComandaDiv.classList.add('ocultar');
+                
+                setTimeout(function() {
+                    nuevaComandaDiv.remove();
+                }, 1000);
+            });
+        });
+        
+// Escuchar el evento 'pedidoEnProceso' emitido por el servidor
+socket.on('pedidoEnProceso', function(data) {
+    console.log('Evento recibido:', data);  // Mostrar los datos recibidos en la consola
+    console.log("Número de mesa en data: " + data.mesa);
+
+    // Seleccionar la mesa específica usando la clase generada con el número de mesa
+    var mesaDiv = document.querySelector(`.mesa.${String(data.mesa).replace(/\s+/g, '-').replace(/[^\w-]/g, '')}`);
+    
+    if (mesaDiv) { // Verifica que la mesa exista
+        const pedidoEnProceso = mesaDiv.querySelector('#pedido-en-proceso');
+        if (pedidoEnProceso) {
+            pedidoEnProceso.classList.add('proceso-realizado');
+            localStorage.setItem('pedidoEnProceso', 'realizado');
+        }
+    }
+});
+
+socket.on('pedidoListo', function(data) {
+    var mesaDiv = document.querySelector(`.mesa.${String(data.mesa).replace(/\s+/g, '-').replace(/[^\w-]/g, '')}`);
+        if (mesaDiv) { // Verifica que la mesa exista
+        const pedidoListo = mesaDiv.querySelector('#pedido-listo');
+        if (pedidoListo) {
+            pedidoListo.classList.add('proceso-realizado');
+            localStorage.setItem('pedidoListo', 'realizado');
+        }}
+    })
+    </script>
+
+</body>
+</html>

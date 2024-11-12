@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos en la Barra/Cocina</title>
+    <style>
+        .mesa {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin: 20px;
+            padding: 15px;
+            width: 300px;
+            display: inline-block;
+            vertical-align: top;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: opacity 1s, transform 1s;
+        }
+        .mesa h2 {
+            margin: 0 0 10px;
+            text-align: center;
+        }
+        .pedido {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .botones {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .ocultar {
+            opacity: 0;
+            transform: translateY(-100px);
+        }
+    </style>
+</head>
+<body>
+    <h1>Pedidos</h1>
+    <div id="contenedorMesas"></div> <!-- Contenedor donde se mostrarán los pedidos -->
+
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io('http://localhost:3000');  // Conexión al servidor WebSocket
+
+        socket.on('connect', function() {
+            console.log('Conectado al servidor WebSocket');
+        });
+
+        socket.on('disconnect', function() {
+            console.log('Desconectado del servidor WebSocket');
+        });
+
+        socket.on('actualizarPedido', function(pedido) {
+    // Crear un nuevo div para la comanda (nuevo pedido)
+    var nuevaComandaDiv = document.createElement('div');
+    nuevaComandaDiv.classList.add('mesa');
+    
+    // Agregar un título para la mesa en la comanda
+    var tituloMesa = document.createElement('h2');
+    tituloMesa.textContent = `Mesa ${pedido.cliente}`;
+    nuevaComandaDiv.appendChild(tituloMesa);
+    
+    // Crear un objeto para almacenar productos y sus cantidades
+    var contadorProductos = {};
+
+    // Contar la cantidad de cada producto
+    pedido.carrito.forEach(function(item) {
+        if (contadorProductos[item.producto]) {
+            contadorProductos[item.producto]++;
+        } else {
+            contadorProductos[item.producto] = 1;
+        }
+    });
+
+    // Agregar los productos al div de la nueva comanda con sus cantidades
+    for (var producto in contadorProductos) {
+        var cantidad = contadorProductos[producto];
+        var productoDiv = document.createElement('div');
+        productoDiv.classList.add('pedido');
+        productoDiv.textContent = `${producto} x${cantidad}`;
+        nuevaComandaDiv.appendChild(productoDiv);
+    }
+
+            // Crear los botones para cocina y barra
+            var botonesDiv = document.createElement('div');
+            botonesDiv.classList.add('botones');
+            
+            var botonCocina = document.createElement('button');
+            botonCocina.textContent = 'En proceso';
+            botonCocina.disabled = false;  // El botón de cocina está habilitado por defecto
+       
+            var botonBarra = document.createElement('button');
+            botonBarra.textContent = 'Pedido Listo';
+            botonBarra.disabled = true;  // El botón de barra está deshabilitado hasta que cocina termine
+            
+            botonesDiv.appendChild(botonCocina);
+            botonesDiv.appendChild(botonBarra);
+            nuevaComandaDiv.appendChild(botonesDiv);
+            
+            // Agregar la nueva comanda al contenedor principal
+            document.getElementById('contenedorMesas').appendChild(nuevaComandaDiv);
+
+            botonCocina.addEventListener('click', function() {
+            socket.emit('Pedido en proceso', { mesa: pedido.cliente });  // Enviar el número de mesa
+            
+            botonCocina.disabled = true;
+            botonBarra.disabled = false;
+        });
+
+            // Evento cuando se hace clic en el botón de barra
+            botonBarra.addEventListener('click', function() {
+            // Aplicar la animación de desvanecimiento y movimiento hacia arriba
+            nuevaComandaDiv.classList.add('ocultar');
+
+            socket.emit('Pedido Listo', { mesa: pedido.cliente });  // Enviar el número de mesa
+
+
+            // Eliminar la comanda después de que la animación haya terminado
+            setTimeout(function() {
+                nuevaComandaDiv.remove();
+            }, 1000); // 1000 ms para coincidir con la duración de la animación
+            });
+        });
+
+    </script>
+    
+</body>
+</html>
+
+

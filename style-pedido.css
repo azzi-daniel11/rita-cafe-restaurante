@@ -1,0 +1,45 @@
+#contenedor-pedido-estado{
+    height: 12em;
+    width:100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+    
+
+.estado-check{
+    border-radius: 100%;
+    border: 1px solid gray;
+    height: 2em;
+    width: 2em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 1em;
+}
+
+.contenedor-estado{
+    width: 12em;
+    display: flex;
+    align-items: center;
+}
+
+.contenedor-estado p{
+    margin-left: 1em;
+}
+
+.proceso-realizado{
+    background-image: url(check.png);
+    background-size: cover;
+    border: 1px solid green;
+}
+
+#pagoEfectivo{
+    width: 100%;
+    height: 3em;
+    background-color: red;
+    border: none;
+    color: white;
+    font-size: 1em;
+    border-radius: 5px;
+}
