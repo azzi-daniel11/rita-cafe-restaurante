@@ -1,3 +1,7 @@
+*{
+    margin: none;
+}
+
 #contenedor-pedido-estado{
     height: 12em;
     width: 20em;
@@ -31,3 +35,130 @@
     background-size: cover;
     border: 1px solid green;
 }
+
+#boton-control-de-stock{
+    height: 5em;
+    width: 5em;
+    border-radius: 100%;
+    border: 1px solid black;
+    position: fixed;
+    top: 2em;
+    right: 2em;
+    background-color: red;
+}
+
+#control-de-stock-fondo{
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.5); /* Color blanco semitransparente para el fondo */
+    backdrop-filter: blur(5px); /* Nivel de desenfoque */
+    z-index: 10000;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#control-de-stock{
+    height: 80vh;
+    width: 80vw;
+    z-index: 20000;
+    position: fixed;
+    border: 1px solid gray;
+    background-color: white;
+    border-radius: 5px;
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+#cerrar-stock{
+    height: 2em;
+    width: 2em;
+    position: fixed;
+    top: 2em;
+    right: 2em;
+}
+
+.producto img {
+    max-width: 100%;
+    max-width: 90%;
+    border-radius: 10px;
+}
+
+.producto P{
+    display: none;
+}
+
+.esconder{
+    display: none;
+    visibility: hidden;
+}
+
+
+/*Control de stock*/
+
+h1 {  
+    text-align: center;  
+    color: #333; /* Color del encabezado */  
+}  
+
+.producto {  
+    border: 1px solid #ccc;  
+    padding: 10px;  
+    margin-left:1.5em;  
+    margin-bottom:1.5em;  
+    height: 20em; /* Aumentar altura para más espacio */  
+    width: 15em;  
+    display: inline-block;  
+    text-align: center;  
+    border-radius: 10px; /* Bordes redondeados */  
+    background-color: white; /* Fondo blanco para los productos */  
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra para efecto de profundidad */  
+    transition: transform 0.2s; /* Transición suave */  
+}  
+
+.producto:hover {  
+    transform: scale(1.05); /* Efecto de agrandamiento al pasar el ratón */  
+}  
+
+.producto img {  
+    width: 150px; /* Tamaño fijo para todas las imágenes */  
+    height: 150px; /* Tamaño fijo para todas las imágenes */  
+    object-fit: cover; /* Ajustar imagen para cubrir el espacio */  
+    border-radius: 10px; /* Bordes redondeados en imágenes */  
+    margin-bottom: 10px; /* Espaciado entre la imagen y el contenido */  
+}  
+
+.producto p {  
+    display: none;
+}  
+
+.boton-hay-stock, .boton-no-hay-stock {  
+    background-color: #4CAF50; /* Color verde para los botones "Hay stock" */  
+    color: white; /* Color del texto del botón */  
+    border: none; /* Sin borde */  
+    padding: 10px 15px; /* Espaciado interno */  
+    text-align: center;  
+    text-decoration: none; /* Sin subrayado */  
+    display: inline-block;  
+    margin: 5px 2px; /* Espaciado entre botones */  
+    cursor: pointer; /* Cambiar el cursor al pasar el ratón */  
+    border-radius: 5px; /* Bordes redondeados para botones */  
+    transition: background-color 0.3s; /* Transición suave para el color de fondo */  
+    width: 150px; /* Fijar ancho para todos los botones */  
+}  
+
+.boton-hay-stock:hover {  
+    background-color: #45a049; /* Color más oscuro al pasar el ratón */  
+}  
+
+.boton-no-hay-stock {  
+    background-color: #f44336; /* Color rojo para los botones "Sin stock" */  
+}  
+
+.boton-no-hay-stock:hover {  
+    background-color: #e53935; /* Color más oscuro al pasar el ratón */  
+}  

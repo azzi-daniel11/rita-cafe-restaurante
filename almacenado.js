@@ -32,13 +32,21 @@ function vaciarCarrito() {
 
 
 
+// Función para cargar el estado al abrir la página
 function cargarEstadoSolicitado() {
     const estadoProcesoSolicitado = localStorage.getItem('pedidoSolicitado');
+    
+    // Verificar si el estado guardado es 'realizado'
     if (estadoProcesoSolicitado === 'realizado') {
         const pedidoSolicitado = document.getElementById('pedido-solicitado');
-        pedidoSolicitado.classList.add('proceso-realizado'); // Volver a aplicar la clase si el estado es "realizado"
+        if (pedidoSolicitado) {
+            pedidoSolicitado.classList.add('proceso-realizado'); // Volver a aplicar la clase si el estado es "realizado"
+        }
     }
 }
+
+// Llamar a la función al cargar la página
+document.addEventListener('DOMContentLoaded', cargarEstadoSolicitado);
 
 
 function cargarEstadoProceso() {
@@ -188,8 +196,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
-
-
-
 

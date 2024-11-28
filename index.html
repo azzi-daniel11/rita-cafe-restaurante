@@ -39,11 +39,15 @@
         <!--Contenedor Carrito-->
             <div id="carrito">
                 <ul id="lista-carrito"></ul>
-                <p id="total" class="price">Total: $0</p>
-                <button class="enviar-pedido esconder" disabled>Enviar Pedido</button>
-                <button  id="checkout-btn" >
-                    Comprar
-                </button>
+                <div id="total-contenedor">
+                    <p id="total" class="price">Total: $0</p>
+                    <button class="enviar-pedido esconder" disabled>Enviar Pedido</button>
+                    <button  id="checkout-btn" >
+                        Comprar
+                    </button>
+                </div>
+
+
             </div>
         <!--Contenedor Carrito-->
         </div>
@@ -63,9 +67,13 @@
         
     </div>
 
-    <div class="division-de-seccion"><h4>Cafetería</h4></div>
-    <div class="menu">
+    <div class="division-de-seccion">
+        <div class="division-de-seccion-titulo">
+            <h4>Cafetería</h4>
+        </div>  
+    </div>
     
+    <div class="menu">
         <div class="producto" data-producto="Café Espresso" data-precio="3">
             <img src="img/cafe.jpg" alt="Café Espresso">
             <h3>Café Espresso</h3>
@@ -76,7 +84,7 @@
             <h3>Cappuccino</h3>
             <p>$4</p>
         </div>
-        <div class="producto" data-producto="Té de hierbas" data-precio="2">
+        <div class="producto" data-producto="Té de Hierbas" data-precio="2">
             <img src="img/te-hierbas.jpg" alt="Té de Hierbas">
             <h3>Té de Hierbas</h3>
             <p>$2</p>
@@ -84,12 +92,16 @@
     
     </div>
     
-    <div id="platos-principales" class="division-de-seccion"><h4>Platos principales</h4></div>
+    <div id="platos-principales" class="division-de-seccion">
+        <div class="division-de-seccion-titulo">
+            <h4>Platos principales</h4>
+        </div>  
+    </div>
     <div class="menu">
     
-        <div class="producto" data-producto="Pizza grande de muzzarella" data-precio="5">
-            <img src="img/pizza.png" alt="Pizza Grande de Muzzarella">
-            <h3>Pizza Grande de Muzzarella</h3>
+        <div class="producto" data-producto="Pizza de Muzza" data-precio="5">
+            <img src="img/pizza.png" alt="Pizza de muzza">
+            <h3>Pizza de Muzza</h3>
             <p>$5</p>
         </div>
         <div class="producto" data-producto="Hamburguesa" data-precio="7">
@@ -120,28 +132,37 @@
     
     </div>
     
-    <div id="bebidas" class="division-de-seccion"><h4>Bebidas</h4></div>
+    <div id="bebidas" class="division-de-seccion">
+        <div class="division-de-seccion-titulo">
+            <h4>Bebidas</h4>
+        </div>
+    </div>
     <div class="menu">
     
-        <div class="producto" data-producto="Refresco de Cola" data-precio="2">
+        <div class="producto" data-producto="Coca Cola" data-precio="2">
             <img src="img/refresco.jpg" alt="Refresco de Cola">
             <h3>Coca Cola</h3>
             <p>$2</p>
         </div>
         <div class="producto" data-producto="Jugo de Naranja" data-precio="3">
-            <img src="img/jugo-naranja.jpg" alt="Jugo de Naranja">
+            <img src="img/jugo-naranja.png" alt="Jugo de Naranja">
             <h3>Jugo de Naranja</h3>
             <p>$3</p>
         </div>
         <div class="producto" data-producto="Agua Mineral" data-precio="1.5">
-            <img src="img/agua.jpg" alt="Agua Mineral">
+            <img src="img/agua.png" alt="Agua Mineral">
             <h3>Agua Mineral</h3>
             <p>$1.5</p>
         </div>
     
     </div>
     
-    <div id="postres" class="division-de-seccion"><h4>Postres</h4></div>
+    <div id="postres" class="division-de-seccion">
+        <div class="division-de-seccion-titulo">
+            <h4>Postres</h4>
+        </div>  
+        
+    </div>
     <div class="menu">
     
         <div class="producto" data-producto="Tarta de Manzana" data-precio="4">
@@ -285,21 +306,33 @@
 
         // Enviar el pedido al hacer clic en "Enviar Pedido"
 // Mostrar el contenedor de pago al hacer clic en "Enviar Pedido"
+// Mostrar el contenedor de pago al hacer clic en "Enviar Pedido"
 document.querySelector('.enviar-pedido').addEventListener('click', function () {
+    const pedidoSolicitado = document.getElementById('pedido-solicitado');
+    
+    // Aplicar la clase 'proceso-realizado'
+    pedidoSolicitado.classList.add('proceso-realizado');
+    
+    // Guardar el estado en localStorage
+    localStorage.setItem('pedidoSolicitado', 'realizado');
+    
     const pedido = {
         cliente: `Mesa ${mesa}`,
         carrito: carrito
     };
-    // Guardar temporalmente el pedido en localStorage (o en una variable)
-    localStorage.setItem('pedidoPendiente', JSON.stringify(pedido));         //<-------------------------------------------------------------
-
-
+    // Guardar temporalmente el pedido en localStorage
+    localStorage.setItem('pedidoPendiente', JSON.stringify(pedido));
+    
     // Mostrar el contenedor de pago después de un pequeño delay
     setTimeout(() => {
         document.getElementById('contenedor-pago').classList.remove('ocultar');
         document.getElementById('contenedor-carrito-btn').classList.remove('expandido');
     }, 1500);
 });
+
+function cambiarEstadoInicio(){
+    
+}
 
 
          // Escuchar el evento 'pedidoEnProceso' emitido por el servidor
@@ -343,7 +376,7 @@ document.querySelector('.enviar-pedido').addEventListener('click', function () {
                 interruptor = true;
         }
             else if (interruptor == true){
-                document.getElementById('detalle-carrito').classList.add('esconder');
+                document.getElementById('detalle-carrito').classList.add('esconder'); //acá es
                 interruptor = false;
             }
         });
@@ -364,11 +397,13 @@ document.querySelector('.enviar-pedido').addEventListener('click', function () {
         if(numeroContadorProductos !== 0){
             document.getElementById('contenedor-carrito-btn').classList.remove('esconder')
         }else if(numeroContadorProductos == 0){
-            document.getElementById('contenedor-carrito-btn').classList.add('esconder') //<--------------------------------------
-            document.getElementById('contenedor-carrito-btn').classList.remove('expandido') //<--------------------------------------
+            document.getElementById('contenedor-carrito-btn').classList.add('esconder') 
+            document.getElementById('contenedor-carrito-btn').classList.remove('expandido') 
+            document.getElementById('carrito-btn').innerText = 'Ver carrito';  //acá es
         }
         });
     }, "40");
+
 
     addEventListener("DOMContentLoaded", (event) => {
         setTimeout(() => {
@@ -428,10 +463,21 @@ document.querySelector('.enviar-pedido').addEventListener('click', function () {
 
             });
         }
+    let cambioDeEstado = true;
         document.getElementById("carrito-btn").addEventListener("click", () => {
             const contenedorCarrito = document.getElementById("contenedor-carrito-btn");
             contenedorCarrito.classList.toggle("expandido"); // Alterna la clase expandido
+            // Verifica el estado y actualiza el texto del botón
+            if (cambioDeEstado) {
+                document.getElementById('carrito-btn').innerText = 'Cerrar carrito';
+            } else {
+                document.getElementById('carrito-btn').innerText = 'Ver carrito';
+            }
+            
+            // Cambia el estado después de verificarlo
+            cambioDeEstado = !cambioDeEstado;
         });
+
 
         
         //Animación menú
@@ -449,9 +495,20 @@ document.querySelector('.enviar-pedido').addEventListener('click', function () {
     }
 });
 
+                        document.addEventListener("click", () => {
+    if (document.getElementById("contenedor-carrito-btn").classList.contains("expandido")) {
+        document.getElementById('carrito-btn').innerText = 'Cerrar carrito'
+    }else{
+        document.getElementById('carrito-btn').innerText = 'Ver carrito'
+    }
+});
+
+
+
     </script>
     <script src="almacenado.js"></script>
     <script src="app.js"></script>
-    
+    <script src="esconder-productos.js"></script>
+
 </body>
 </html>

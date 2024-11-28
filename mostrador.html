@@ -59,6 +59,147 @@
     </style>
 </head>
 <body>
+    <div id="boton-control-de-stock"></div>
+
+    <div id="control-de-stock-fondo" class="esconder">
+        <button id="cerrar-stock">X</button>
+        <div id="control-de-stock">
+            <h1>Stock productos</h1>  
+            <div id="lista-productos"></div>  
+        
+            <script>  
+
+            //cerrar control de stock
+    var botonVerStock = document.getElementById('boton-control-de-stock');
+    var ContenedorStock = document.getElementById('control-de-stock-fondo');
+    var cerrarStock = document.getElementById('cerrar-stock');
+
+    botonVerStock.addEventListener('click', function(){
+        ContenedorStock.classList.remove('esconder')
+    });
+
+    cerrarStock.addEventListener('click', function(){
+        ContenedorStock.classList.add('esconder')
+    })
+
+
+        // Función para obtener el stock desde la base de datos a través del servidor
+        async function obtenerStock() {
+            try {
+                const response = await fetch('http://localhost:3000/api/productos');
+                if (!response.ok) throw new Error('Error al obtener datos del servidor');
+                return await response.json();
+            } catch (error) {
+                console.error('Error:', error);
+                return {};
+            }
+        }
+        
+        // Función para cargar productos desde un archivo HTML externo
+        // Cargar productos dinámicamente
+        async function cargarProductos() {
+            try {
+                const response = await fetch('index.html');
+                if (!response.ok) throw new Error('Error al cargar el archivo');
+        
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+        
+                const productos = doc.querySelectorAll('.producto');
+                const listaProductos = document.getElementById('lista-productos');
+                listaProductos.innerHTML = '';
+        
+                // Obtener datos de stock
+                const stockData = await obtenerStock();
+        
+        productos.forEach(producto => {
+            const nombreProducto = producto.querySelector('h3')?.textContent.trim();
+            const productoStock = stockData.find(item => item.nombre === nombreProducto);
+        
+            // Crear elementos de stock
+                const stockElement = document.createElement('p');
+                stockElement.textContent = productoStock
+                    ? `Stock: ${productoStock.stock}`
+                    : `Stock: No disponible`;
+                stockElement.style.display = 'block';
+        
+                // Crear botones
+            // Crear botones
+            const botonHayStock = document.createElement('button');
+            botonHayStock.classList.add('boton-hay-stock');
+            botonHayStock.innerText = "Hay stock";
+            botonHayStock.dataset.nombre = nombreProducto; // Asignar data-nombre
+        
+            const botonNoHayStock = document.createElement('button');
+            botonNoHayStock.classList.add('boton-no-hay-stock');
+            botonNoHayStock.innerText = "Sin stock";
+            botonNoHayStock.dataset.nombre = nombreProducto; // Asignar data-nombre
+        
+            // Agregar los elementos a la interfaz
+            producto.appendChild(botonHayStock);
+            producto.appendChild(botonNoHayStock);
+            listaProductos.appendChild(producto.cloneNode(true));
+            });
+        
+        
+            
+        // Delegación de eventos: escuchar el clic en los botones
+        listaProductos.addEventListener('click', async (event) => {
+            if (event.target.classList.contains('boton-hay-stock')) {
+                const nombreProducto = event.target.dataset.nombre; // Obtener el nombre del producto del dataset
+        
+                try {
+                    const response = await fetch('http://localhost:3000/api/actualizar-disponible', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nombre: nombreProducto, disponible: 1 }) // Cambiar a disponible: 1
+                    });
+        
+                    if (!response.ok) throw new Error('Error al actualizar la disponibilidad');
+                    
+                    alert(`El producto "${nombreProducto}" ahora está disponible.`);
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('No se pudo actualizar la disponibilidad');
+                }
+        
+            } else if (event.target.classList.contains('boton-no-hay-stock')) {
+                const nombreProducto = event.target.dataset.nombre; // Obtener el nombre del producto del dataset
+        
+                try {
+                    const response = await fetch('http://localhost:3000/api/actualizar-disponible', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nombre: nombreProducto, disponible: 0 }) // Cambiar a disponible: 0
+                    });
+        
+                    if (!response.ok) throw new Error('Error al actualizar la disponibilidad');
+                    
+                    alert(`El producto "${nombreProducto}" ahora no está disponible.`);
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('No se pudo actualizar la disponibilidad');
+                }
+            }
+        });
+        
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('lista-productos').innerHTML = 'Error al cargar los productos.';
+            }
+        }
+        
+        // Llamar a la función para cargar los productos
+        window.onload = cargarProductos;
+        
+        
+        
+            </script>  
+
+        </div>
+    </div>
+
     <h1>Pedidos</h1>
     <div id="contenedorMesas"></div> <!-- Contenedor donde se mostrarán los pedidos -->
 
@@ -191,6 +332,7 @@ socket.on('pedidoListo', function(data) {
             localStorage.setItem('pedidoListo', 'realizado');
         }}
     })
+
     </script>
 
 </body>

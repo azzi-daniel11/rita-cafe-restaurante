@@ -119,3 +119,5 @@ document.getElementById('ingresar-correo').addEventListener('click', ()=>{
         socket.emit('direccionDeCorreo', correoCliente);
 
 })
+
+/*---------------------------------------*/

@@ -5,6 +5,8 @@ import cors from 'cors';
 import { MercadoPagoConfig, Preference} from 'mercadopago';
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
+import mysql from 'mysql2';
+
 
 dotenv.config();
 
@@ -28,6 +30,7 @@ const io = new Server(server, {
     }
 });
 
+
 let correoCliente = '';
 // Manejar conexiones WebSocket
 io.on('connection', (socket) => {
@@ -50,6 +53,7 @@ if (correoCliente) {
 } else {
     console.error('No se puede enviar el ticket: correo del cliente no proporcionado.');
 }
+
 
 // Emitir el pedido a todos los clientes conectados
 io.emit('actualizarPedido', pedido);
@@ -106,7 +110,7 @@ app.post("/create_preference", async (req, res) => {
                 pending: "https://www.youtube.com/watch?v=ViWr4rzBgXk&list=RDMM&start_radio=1&rv=zpzdgmqIHOQ&ab_channel=jessica37chan",
             },
             auto_return: "approved",
-            notification_url: "https://91d7-2800-810-478-24da-6d7a-2a63-23e1-a58.ngrok-free.app/webhook"
+            notification_url: "https://e129-2800-810-478-24da-b1e3-65ba-1c26-472e.ngrok-free.app/webhook"
         };
 
         const preference = new Preference(client);
@@ -148,7 +152,6 @@ server.listen(port, '0.0.0.0', () => {
 });
 
 
-//dotenv
 
 // Configura MercadoPago con la clave de entorno
 //mercadopago.configurations.setAccessToken(process.env.MERCADO_PAGO_KEY);
@@ -199,43 +202,130 @@ app.get('/verificar-pago', (req, res) => {
 
 // Configuración del transportador (aquí usamos Gmail como ejemplo)
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'rita.cafe.resto@gmail.com', // Tu correo electrónico
-    pass: 'txph xpkg kqqo pigo', // Tu contraseña de aplicación (NO la contraseña de tu cuenta)
-  },
+    service: 'gmail',
+    auth: {
+      user: 'rita.cafe.resto@gmail.com', // Tu correo electrónico
+      pass: 'txph xpkg kqqo pigo', // Tu contraseña de aplicación (NO la contraseña de tu cuenta)
+    },
+  });
+  
+  // Función para enviar el correo electrónico
+  function enviarTicket(correoDestino, pedido) {
+      // Construir el cuerpo del correo en HTML
+      let total = 0; // Inicializar el total en 0
+      let cuerpoCorreo = `
+          <h1>¡Gracias por tu compra!</h1>
+          <h4> Pedido de ${pedido.cliente}</h4>
+          <p>Tu pedido está en preparación.</p>
+          <h3>Resumen del pedido:</h3>
+          <ul>
+      `;
+  
+      // Recorrer el carrito para agregar cada producto al cuerpo del correo y sumar el total
+      pedido.carrito.forEach(item => {
+          cuerpoCorreo += `<li>${item.producto} - $${item.precio}</li>`;
+          total += item.precio; // Sumar el precio del producto al total
+      });
+  
+      // Agregar el total al cuerpo del correo
+      cuerpoCorreo += `
+          </ul>
+          <h3>Total: $${total}</h3>
+          <p>¡Gracias por su pedido en Rita Café & Restaurante!</p>
+      `;
+  
+      const mailOptions = {
+          from: '"Rita Café & Restaurante" <rita.cafe.resto@gmail.com>',
+          to: correoDestino,
+          subject: `Nuevo pedido de ${pedido.cliente}`,
+          html: cuerpoCorreo // Utilizar 'html' en lugar de 'text' para correos con formato
+      };
+  
+      // Enviar el correo
+      transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              return console.error('Error al enviar el correo:', error);
+          }
+          console.log('Correo enviado:', info.response);
+      });
+  }
+  
+
+
+  //----------------------------------->Conexión a base de datos<----------------------------------------------------
+// Configuración de la base de datos
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '', // Cambiar por tu contraseña
+  database: 'sistema_pedidos'
 });
 
-// Función para enviar el correo electrónico
-function enviarTicket(correoDestino, pedido) {
-    // Construir el cuerpo del correo
-    let cuerpoCorreo = `Nuevo pedido de ${pedido.cliente}:\n\nProductos:\n`;
-    let total = 0; // Inicializar el total en 0
+// Conectar a la base de datos
+db.connect(err => {
+  if (err) {
+      console.error('Error conectando a la base de datos:', err);
+      return;
+  }
+  console.log('Conexión exitosa a la base de datos');
+});
 
-    // Recorrer el carrito para agregar cada producto al cuerpo del correo y sumar el total
-    pedido.carrito.forEach(item => {
-        cuerpoCorreo += `${item.producto} - $${item.precio}\n`;
-        total += item.precio; // Sumar el precio del producto al total
-    });
-
-    // Agregar el total al cuerpo del correo
-    cuerpoCorreo += `\nTotal: $${total}\n`;
-    cuerpoCorreo += `\n¡Gracias por su pedido en Rita Café & Restaurante!`;
-
-    const mailOptions = {
-        from: '"Rita Café & Restaurante" <rita.cafe.resto@gmail.com>',
-        to: correoDestino,
-        subject: `Nuevo pedido de ${pedido.cliente}`,
-        text: cuerpoCorreo // Utilizar el cuerpo del correo formateado
-    };
-
-    // Enviar el correo
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return console.error('Error al enviar el correo:', error);
+// Endpoint para obtener los productos con disponibilidad
+app.get('/api/productos', (req, res) => {
+    const query = 'SELECT nombre, stock, disponible FROM productos';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error ejecutando la consulta:', err);
+            res.status(500).json({ error: 'Error en el servidor' });
+            return;
         }
-        console.log('Correo enviado:', info.response);
+        res.json(results);
     });
-}
+  });
+
+  // Evento de WebSocket: actualizar disponibilidad
+io.on('connection', socket => {
+    console.log('Disponibilidad modificada');
+
+    socket.on('cambiarDisponibilidad', (data) => {
+        const { nombre, disponible } = data;
+        const query = 'UPDATE productos SET disponible = ? WHERE nombre = ?';
+        db.query(query, [disponible, nombre], (err, result) => {
+            if (err) {
+                console.error('Error actualizando disponibilidad:', err);
+                return;
+            }
+            console.log(`Disponibilidad de "${nombre}" actualizada a: ${disponible}`);
+
+            // Notificar a todos los clientes sobre el cambio
+            io.emit('actualizarProducto', { nombre, disponible });
+        });
+    });
+});
+
+  
+
+  // Endpoint para actualizar la disponibilidad de un producto
+app.post('/api/actualizar-disponible', (req, res) => {
+    const { nombre, disponible } = req.body;
+  
+    if (nombre === undefined || disponible === undefined) {
+      return res.status(400).json({ error: 'Faltan datos en la solicitud' });
+    }
+  
+    const query = 'UPDATE productos SET disponible = ? WHERE nombre = ?';
+    db.query(query, [disponible, nombre], (err, results) => {
+      if (err) {
+        console.error('Error ejecutando la consulta:', err);
+        return res.status(500).json({ error: 'Error en el servidor' });
+      }
+  
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: 'Producto no encontrado' });
+      }
+  
+      res.json({ message: 'Disponibilidad actualizada correctamente' });
+    });
+  });
 
 
